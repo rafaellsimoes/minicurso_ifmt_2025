@@ -1,0 +1,85 @@
+@{
+    ViewData["Title"] = "Saque";
+    var conta = ViewBag.Conta as ContaBancariaMVC.Models.ContaBancaria;
+}
+
+<div class="container">
+    <h2 class="mb-4">Saque - @conta.Titular</h2>
+
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["MensagemErro"]
+        </div>
+    }
+
+    <form asp-action="Saque" asp-route-id="@conta.Id" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="card-title mb-0">Realizar Saque</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Número da Conta:</label>
+                            <p class="form-control-plaintext">@conta.NumeroConta</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Titular:</label>
+                            <p class="form-control-plaintext">@conta.Titular</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Saldo Disponível:</label>
+                            <p class="form-control-plaintext text-success fs-5 fw-bold">@conta.Saldo.ToString("C")</p>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="valor" class="form-label fw-bold">Valor do Saque:</label>
+                            <input type="number" step="0.01" min="0.01" max="@conta.Saldo"
+                                   name="valor" class="form-control form-control-lg" required
+                                   placeholder="0,00" />
+                            @if (ViewData.ModelState["valor"]?.Errors?.Count > 0)
+                            {
+                                <span class="text-danger">@ViewData.ModelState["valor"].Errors[0].ErrorMessage</span>
+                            }
+                            <small class="form-text text-muted">Saldo máximo: @conta.Saldo.ToString("C")</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                💰 Realizar Saque
+                            </button>
+                            <a asp-action="Details" asp-route-id="@conta.Id" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" class="btn btn-outline-primary">← Voltar para Lista de Contas</a>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .form-control-lg {
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .btn-lg {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+        }
+    </style>
+}
