@@ -1,0 +1,74 @@
+@model ContaBancariaMVC.Models.ContaBancaria
+
+@{
+    ViewData["Title"] = "Detalhes da Conta";
+}
+
+<h2>Detalhes da Conta</h2>
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["MensagemSucesso"]
+    </div>
+}
+
+<div>
+    <h4>Conta Bancária</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Número da Conta:</dt>
+        <dd class="col-sm-10">@Model.NumeroConta</dd>
+
+        <dt class="col-sm-2">Titular:</dt>
+        <dd class="col-sm-10">@Model.Titular</dd>
+
+        <dt class="col-sm-2">Saldo:</dt>
+        <dd class="col-sm-10">@Model.Saldo.ToString("C")</dd>
+
+        <dt class="col-sm-2">Data de Criação:</dt>
+        <dd class="col-sm-10">@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")</dd>
+    </dl>
+</div>
+
+<div class="mb-3">
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    <a asp-action="Deposito" asp-route-id="@Model.Id" class="btn btn-success">Depósito</a>
+    <a asp-action="Saque" asp-route-id="@Model.Id" class="btn btn-warning">Saque</a>
+</div>
+
+<h3>Últimas Operações</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Data</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Descrição</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewBag.Operacoes != null)
+        {
+            @foreach (var operacao in ViewBag.Operacoes as List<ContaBancariaMVC.Models.Operacao>)
+            {
+                <tr>
+                    <td>@operacao.DataOperacao.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <span class="badge @(operacao.Tipo == ContaBancariaMVC.Models.TipoOperacao.Deposito ? "bg-success" : "bg-warning")">
+                            @operacao.Tipo
+                        </span>
+                    </td>
+                    <td>@operacao.Valor.ToString("C")</td>
+                    <td>@operacao.Descricao</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">Nenhuma operação realizada</td>
+            </tr>
+        }
+    </tbody>
+</table>
