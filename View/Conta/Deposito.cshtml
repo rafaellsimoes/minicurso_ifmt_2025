@@ -1,0 +1,50 @@
+@{
+    ViewData["Title"] = "Depósito";
+    var conta = ViewBag.Conta as ContaBancariaMVC.Models.ContaBancaria;
+}
+
+<h2>Depósito - @conta.Titular</h2>
+
+<form asp-action="Deposito" asp-route-id="@conta.Id" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label">Número da Conta:</label>
+                <p class="form-control-plaintext fw-bold">@conta.NumeroConta</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Titular:</label>
+                <p class="form-control-plaintext">@conta.Titular</p>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Saldo Atual:</label>
+                <p class="form-control-plaintext text-success fw-bold">@conta.Saldo.ToString("C")</p>
+            </div>
+
+            <div class="mb-3">
+                <label for="valor" class="form-label">Valor do Depósito:</label>
+                <input type="number" step="0.01" min="0.01" name="valor" class="form-control" required
+                       placeholder="Digite o valor do depósito" />
+                @if (ViewData.ModelState["valor"]?.Errors?.Count > 0)
+                {
+                    <span class="text-danger">@ViewData.ModelState["valor"].Errors[0].ErrorMessage</span>
+                }
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="fas fa-money-bill-wave"></i> Realizar Depósito
+                </button>
+                <a asp-action="Details" asp-route-id="@conta.Id" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-primary">← Voltar para Lista de Contas</a>
+</div>
